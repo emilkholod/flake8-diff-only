@@ -8,16 +8,16 @@ FilePath = str
 LineNumber = int
 
 
-class DiffOnlyChecker:
+class Flake8DiffOnlyChecker:
     name = "flake8-diff-only"
     version = "0.1.0"
 
-    _instance: ClassVar[DiffOnlyChecker | None] = None
+    _instance: ClassVar[Flake8DiffOnlyChecker | None] = None
     _diff_lines: ClassVar[dict[FilePath, set[LineNumber]]]
 
     def __new__(  # type: ignore[no-untyped-def]
         cls, *args, **kwargs
-    ) -> DiffOnlyChecker:
+    ) -> Flake8DiffOnlyChecker:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._diff_lines = cls._load_git_diff()
@@ -33,7 +33,7 @@ class DiffOnlyChecker:
             return
 
         # Получаем список изменённых строк
-        changed_lines = DiffOnlyChecker._diff_lines[self.filename]
+        changed_lines = Flake8DiffOnlyChecker._diff_lines[self.filename]
 
         # Получаем все ошибки от других плагинов
         for lineno, col_offset, message, checker in self._original_errors():
@@ -73,7 +73,9 @@ class DiffOnlyChecker:
                 # Парсим хедер ханка: @@ -old,+new @@
                 try:
                     new_section = line.split(" ")[2]
-                    start_line, length = DiffOnlyChecker._parse_diff_range(new_section)
+                    start_line, length = Flake8DiffOnlyChecker._parse_diff_range(
+                        new_section
+                    )
                     lines = set(range(start_line, start_line + length))
                     if current_file:
                         current_file_lines: set[LineNumber] = result.setdefault(

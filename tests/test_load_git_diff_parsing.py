@@ -2,7 +2,7 @@ import subprocess
 
 import pytest
 
-from flake8_diff_only.checker import DiffOnlyChecker
+from flake8_diff_only.checker import Flake8DiffOnlyChecker
 
 
 @pytest.fixture
@@ -10,12 +10,12 @@ def patched_load_git_diff(monkeypatch: pytest.MonkeyPatch):
 
     def make_checker(diff_output: str):
         monkeypatch.setattr(
-            subprocess, "check_output", lambda *a, **k: diff_output.encode()
+            subprocess, "check_output", lambda *args, **kwargs: diff_output.encode()
         )
         # Сброс Singleton, чтобы подхватить новый diff
-        DiffOnlyChecker._instance = None
+        Flake8DiffOnlyChecker._instance = None
 
-        return DiffOnlyChecker._load_git_diff()
+        return Flake8DiffOnlyChecker._load_git_diff()
 
     return make_checker
 
