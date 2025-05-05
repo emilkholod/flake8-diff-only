@@ -10,7 +10,7 @@ LineNumber = int
 
 class Flake8DiffOnlyChecker:
     name = "flake8-diff-only"
-    version = "0.1.2"
+    version = "0.1.3"
 
     _instance: ClassVar[Flake8DiffOnlyChecker | None] = None
     _diff_lines: ClassVar[dict[FilePath, set[LineNumber]]]
@@ -55,7 +55,7 @@ class Flake8DiffOnlyChecker:
         Получаем список изменённых строк из git diff.
         Возвращает словарь: { 'filename': set(linenos) }
         """
-        diff_cmd = ["git", "diff", "--unified=0", "--no-color"]
+        diff_cmd = ["git", "diff", "--unified=0", "--no-color", "--cached"]
         try:
             output = subprocess.check_output(
                 diff_cmd, stderr=subprocess.DEVNULL
