@@ -1,9 +1,7 @@
 # Project: flake8-diff-only
 
 ## Description
-
-
-## How the Plugin Works
+This project provides a plugin for Flake8 that checks only the modified lines of files for Flake8 violations.
 
 
 ## Usage
