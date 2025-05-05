@@ -8,20 +8,11 @@ repos:
     rev: 25.1.0
     hooks:
       - id: black
-        name: black - format package
-        files: flake8_diff_only
-      - id: black
-        name: black - format tests
-        files: tests
-        args:
-          - -S
 
   - repo: https://github.com/PyCQA/flake8
     rev: 7.1.1
     hooks:
       - id: flake8
-        name: flake8 - check package
-        files: flake8_diff_only
         additional_dependencies:
           - flake8-bugbear
           - flake8-print
@@ -30,19 +21,6 @@ repos:
           - flake8-quotes
           - Flake8-pyproject
           - flake8-eradicate
-      - id: flake8
-        name: flake8 - check tests
-        files: tests
-        additional_dependencies:
-          - flake8-bugbear
-          - flake8-print
-          - flake8-string-format
-          - flake8-comprehensions
-          - flake8-quotes
-          - Flake8-pyproject
-          - flake8-eradicate
-        args:
-          - --ignore=Q000
 
   - repo: https://github.com/python-poetry/poetry
     rev: 2.1.1
