@@ -19,9 +19,6 @@ def run_patched_checker(monkeypatch: pytest.MonkeyPatch):
         classmethod(lambda cls: {"test_file.py": {2}}),
     )
 
-    # Сброс Singleton, чтобы подхватить новый diff
-    Flake8DiffOnlyChecker._instance = None
-
     def make_checker(code: str, fake_errors: list[tuple[int, int, str, type]]):
         tree = ast.parse(code)
         checker = Flake8DiffOnlyChecker(tree, filename="test_file.py")

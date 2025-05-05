@@ -12,8 +12,6 @@ def patched_load_git_diff(monkeypatch: pytest.MonkeyPatch):
         monkeypatch.setattr(
             subprocess, "check_output", lambda *args, **kwargs: diff_output.encode()
         )
-        # Сброс Singleton, чтобы подхватить новый diff
-        Flake8DiffOnlyChecker._instance = None
 
         return Flake8DiffOnlyChecker._load_git_diff()
 
