@@ -40,7 +40,7 @@ Repository = "https://github.com/emilkholod/flake8-diff-only"
 Issues = "https://github.com/emilkholod/flake8-diff-only/issues"
 
 [project.entry-points."flake8.extension"]
-FDOC = "flake8_diff_only.checker:Flake8DiffOnlyChecker"
+FDO = "flake8_diff_only.checker:Flake8DiffOnlyChecker"
 
 [tool.isort]
 profile = "black"
