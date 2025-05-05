@@ -10,7 +10,7 @@ LineNumber = int
 
 class Flake8DiffOnlyChecker:
     name = "flake8-diff-only"
-    version = "0.1.1"
+    version = "0.1.2"
 
     _instance: ClassVar[Flake8DiffOnlyChecker | None] = None
     _diff_lines: ClassVar[dict[FilePath, set[LineNumber]]]
