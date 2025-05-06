@@ -1,59 +1,49 @@
-import ast
-
 import pytest
+from flake8.checker import FileChecker
 
-from flake8_diff_only.checker import Flake8DiffOnlyChecker
+from flake8_diff_only import patch
 
 
 @pytest.fixture
 def run_patched_checker(monkeypatch: pytest.MonkeyPatch):
-    """
-    Возвращает патченный класс Flake8DiffOnlyChecker,
-    в котором _load_git_diff возвращает фиктивный diff.
-    """
+    filename = "test_file.py"
 
     # Подменяем diff: только строка 2 в файле test_file.py изменена
-    monkeypatch.setattr(
-        Flake8DiffOnlyChecker,
-        "_load_git_diff",
-        classmethod(lambda cls: {"test_file.py": {2}}),
-    )
+    monkeypatch.setattr(patch, "get_changed_lines", lambda filename: {2})
 
-    def make_checker(code: str, fake_errors: list[tuple[int, int, str, type]]):
-        tree = ast.parse(code)
-        checker = Flake8DiffOnlyChecker(tree, filename="test_file.py")
+    def make_checker(fake_errors: list[tuple[str, int, int, str, str | None]]):
 
         # Подменим _original_errors на заглушку
-        monkeypatch.setattr(checker, "_original_errors", lambda: fake_errors)
+        checker = FileChecker(filename=filename, plugins=None, options=None)
+        monkeypatch.setattr(
+            patch, "_original_run_checks", lambda self: (filename, fake_errors, [])
+        )
 
-        return list(checker.run())  # type: ignore[no-untyped-call]
+        return list(checker.run_checks())
 
     return make_checker
 
 
 def test_error_on_changed_line(run_patched_checker):
-    code = "x = 1\ny=2\nz = 3"
-    fake_errors = [(2, 0, "T100 Fake error", Flake8DiffOnlyChecker)]
-    results = run_patched_checker(code, fake_errors)
+    fake_errors = [("T100", 2, 0, "Fake error", None)]
+    results = run_patched_checker(fake_errors)
 
-    assert results == fake_errors, "Ошибка должна быть показана на изменённой строке"
+    assert results[1] == fake_errors, "Ошибка должна быть показана на изменённой строке"
 
 
 def test_no_error_on_unchanged_line(run_patched_checker):
-    code = "x = 1\ny = 2\nz = 3"
-    fake_errors = [(1, 0, "T100 Fake error", Flake8DiffOnlyChecker)]
-    results = run_patched_checker(code, fake_errors)
+    fake_errors = [("T100", 1, 0, "Fake error", None)]
+    results = run_patched_checker(fake_errors)
 
-    assert results == [], "Ошибка на неизменённой строке должна быть отфильтрована"
+    assert results[1] == [], "Ошибка на неизменённой строке должна быть отфильтрована"
 
 
 def test_multiple_errors_some_filtered(run_patched_checker):
-    code = "x=1\ny = 2\nz = 3"
     fake_errors = [
-        (1, 0, "T101 E1", Flake8DiffOnlyChecker),
-        (2, 0, "T102 E2", Flake8DiffOnlyChecker),
-        (3, 0, "T103 E3", Flake8DiffOnlyChecker),
+        ("T100", 1, 0, "Fake error", None),
+        ("T100", 2, 0, "Fake error", None),
+        ("T100", 3, 0, "Fake error", None),
     ]
-    results = run_patched_checker(code, fake_errors)
+    results = run_patched_checker(fake_errors)
 
-    assert results == [fake_errors[1]], "Ожидалась только ошибка на строке 2"
+    assert results[1] == [fake_errors[1]], "Ожидалась только ошибка на строке 2"
