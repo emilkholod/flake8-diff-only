@@ -4,7 +4,7 @@ requires = [ "poetry-core>=2.0" ]
 
 [project]
 name = "flake8-diff-only"
-version = "0.1.6"
+version = "0.1.7"
 description = "Flake8 plugin to show errors only on changed lines"
 readme = "README.md"
 

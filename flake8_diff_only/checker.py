@@ -4,7 +4,7 @@ from typing import Any, ClassVar
 
 class Flake8DiffOnlyChecker:
     name = "flake8-diff-only"
-    version = "0.1.6"
+    version = "0.1.7"
 
     enabled: ClassVar[bool] = False
 
