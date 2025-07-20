@@ -21,3 +21,5 @@ To install the plugin, run:
 ```bash
 pip install flake8-diff-only
 ```
+
+To activate this plugin you need to add `--diff-only` on `flake8` calling.

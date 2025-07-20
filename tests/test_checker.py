@@ -2,6 +2,7 @@ import pytest
 from flake8.checker import FileChecker
 
 from flake8_diff_only import patch
+from flake8_diff_only.checker import Flake8DiffOnlyChecker
 
 
 @pytest.fixture
@@ -10,6 +11,8 @@ def run_patched_checker(monkeypatch: pytest.MonkeyPatch):
 
     # Подменяем diff: только строка 2 в файле test_file.py изменена
     monkeypatch.setattr(patch, "get_changed_lines", lambda filename: {2})
+
+    monkeypatch.setattr(Flake8DiffOnlyChecker, "enabled", True)
 
     def make_checker(fake_errors: list[tuple[str, int, int, str, str | None]]):
 

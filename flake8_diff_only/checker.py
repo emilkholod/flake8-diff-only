@@ -1,10 +1,13 @@
 import ast
+from importlib.metadata import version as _version
 from typing import Any, ClassVar
+
+__version__ = _version("flake8-diff-only")
 
 
 class Flake8DiffOnlyChecker:
     name = "flake8-diff-only"
-    version = "0.1.7"
+    version = __version__
 
     enabled: ClassVar[bool] = False
 
