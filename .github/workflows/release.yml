@@ -1,0 +1,37 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "\\d+.\\d+.\\d+"
+
+jobs:
+  publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛎 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🧰 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 🧪 Install Poetry
+        uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: 2.0.1
+
+      - name: 📦 Install dependencies
+        run: poetry install --no-root
+
+      - name: 🔒 Configure token
+        run: poetry config pypi-token.pypi ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}
+
+      - name: 🛠 Build package
+        run: poetry build
+
+      - name: 🚀 Publish to PyPI
+        run: poetry publish
